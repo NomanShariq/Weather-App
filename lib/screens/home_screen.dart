@@ -1,5 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:weather_app/widgets/weather_day_item.dart';
+
+import '../widgets/weather_time_line.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -90,7 +93,7 @@ class HomeScreen extends StatelessWidget {
                             ],
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 70,
                         ),
                       ],
@@ -110,367 +113,90 @@ class HomeScreen extends StatelessWidget {
                       children: [
                         Padding(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 15, vertical: 15),
+                              horizontal: 20, vertical: 15),
                           child: Stack(
                             children: [
                               Row(
                                 children: [
-                                  Column(
-                                    children: [
-                                      const Text(
-                                        '1 am',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 7,
-                                      ),
-                                      Image.asset(
-                                        "assets/images/Icon.png",
-                                        height: 20,
-                                      ),
-                                      SizedBox(
-                                        height: 7,
-                                      ),
-                                      const Text(
-                                        '29°',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    ],
+                                  WeatherTimelineItem(
+                                    temperature: '29°',
+                                    time: '1 am',
+                                    imagePath: 'assets/images/Icon.png',
                                   ),
-                                  SizedBox(
-                                    width: 7,
+                                  WeatherTimelineItem(
+                                    temperature: '29°',
+                                    time: '2 am',
+                                    imagePath: 'assets/images/Icon.png',
                                   ),
-                                  Column(
-                                    children: [
-                                      const Text(
-                                        '2 am',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 7,
-                                      ),
-                                      Image.asset(
-                                        "assets/images/Icon.png",
-                                        height: 20,
-                                      ),
-                                      SizedBox(
-                                        height: 7,
-                                      ),
-                                      const Text(
-                                        '29°',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    ],
+                                  WeatherTimelineItem(
+                                    temperature: '29°',
+                                    time: '3 am',
+                                    imagePath: 'assets/images/Icon.png',
                                   ),
-                                  SizedBox(
-                                    width: 7,
+                                  WeatherTimelineItem(
+                                    temperature: '29°',
+                                    time: '4 am',
+                                    imagePath: 'assets/images/Icon.png',
                                   ),
-                                  Column(
-                                    children: [
-                                      const Text(
-                                        '3 am',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 7,
-                                      ),
-                                      Image.asset(
-                                        "assets/images/Icon.png",
-                                        height: 20,
-                                      ),
-                                      SizedBox(
-                                        height: 7,
-                                      ),
-                                      const Text(
-                                        '29°',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    ],
+                                  WeatherTimelineItem(
+                                    temperature: '29°',
+                                    time: '5 am',
+                                    imagePath: 'assets/images/Icon.png',
                                   ),
-                                  SizedBox(
-                                    width: 7,
+                                  WeatherTimelineItem(
+                                    temperature: '29°',
+                                    time: '6 am',
+                                    imagePath: 'assets/images/Icon.png',
                                   ),
-                                  Column(
-                                    children: [
-                                      const Text(
-                                        '4 am',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 7,
-                                      ),
-                                      Image.asset(
-                                        "assets/images/Icon.png",
-                                        height: 20,
-                                      ),
-                                      SizedBox(
-                                        height: 7,
-                                      ),
-                                      const Text(
-                                        '29°',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    ],
+                                  WeatherTimelineItem(
+                                    temperature: '29°',
+                                    time: '7 am',
+                                    imagePath: 'assets/images/Icon.png',
                                   ),
-                                  SizedBox(
-                                    width: 7,
+                                  WeatherTimelineItem(
+                                    temperature: '29°',
+                                    time: '8 am',
+                                    imagePath: 'assets/images/Icon.png',
                                   ),
-                                  Column(
-                                    children: [
-                                      const Text(
-                                        '5 am',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 7,
-                                      ),
-                                      Image.asset(
-                                        "assets/images/Icon.png",
-                                        height: 20,
-                                      ),
-                                      SizedBox(
-                                        height: 7,
-                                      ),
-                                      const Text(
-                                        '29°',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    ],
+                                  WeatherTimelineItem(
+                                    temperature: '29°',
+                                    time: '9 am',
+                                    imagePath: 'assets/images/Icon.png',
                                   ),
-                                  SizedBox(
-                                    width: 7,
+                                  WeatherTimelineItem(
+                                    temperature: '29°',
+                                    time: '10 am',
+                                    imagePath: 'assets/images/Icon.png',
                                   ),
-                                  Column(
-                                    children: [
-                                      const Text(
-                                        '6 am',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 7,
-                                      ),
-                                      Image.asset(
-                                        "assets/images/Icon.png",
-                                        height: 20,
-                                      ),
-                                      SizedBox(
-                                        height: 7,
-                                      ),
-                                      const Text(
-                                        '29°',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    ],
+                                  WeatherTimelineItem(
+                                    temperature: '29°',
+                                    time: '11 am',
+                                    imagePath: 'assets/images/Icon.png',
                                   ),
-                                  SizedBox(
-                                    width: 7,
+                                  WeatherTimelineItem(
+                                    temperature: '29°',
+                                    time: '12 apm',
+                                    imagePath: 'assets/images/Icon.png',
                                   ),
-                                  Column(
-                                    children: [
-                                      const Text(
-                                        '7 am',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 7,
-                                      ),
-                                      Image.asset(
-                                        "assets/images/Icon.png",
-                                        height: 20,
-                                      ),
-                                      SizedBox(
-                                        height: 7,
-                                      ),
-                                      const Text(
-                                        '29°',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    ],
+                                  WeatherTimelineItem(
+                                    temperature: '29°',
+                                    time: '1 pm',
+                                    imagePath: 'assets/images/Icon.png',
                                   ),
-                                  SizedBox(
-                                    width: 7,
+                                  WeatherTimelineItem(
+                                    temperature: '29°',
+                                    time: '2 pm',
+                                    imagePath: 'assets/images/Icon.png',
                                   ),
-                                  Column(
-                                    children: [
-                                      const Text(
-                                        '8 am',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 7,
-                                      ),
-                                      Image.asset(
-                                        "assets/images/Icon.png",
-                                        height: 20,
-                                      ),
-                                      SizedBox(
-                                        height: 7,
-                                      ),
-                                      const Text(
-                                        '29°',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    ],
+                                  WeatherTimelineItem(
+                                    temperature: '29°',
+                                    time: '3 pm',
+                                    imagePath: 'assets/images/Icon.png',
                                   ),
-                                  SizedBox(
-                                    width: 7,
-                                  ),
-                                  Column(
-                                    children: [
-                                      const Text(
-                                        '9 am',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 7,
-                                      ),
-                                      Image.asset(
-                                        "assets/images/Icon.png",
-                                        height: 20,
-                                      ),
-                                      SizedBox(
-                                        height: 7,
-                                      ),
-                                      const Text(
-                                        '29°',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    width: 7,
-                                  ),
-                                  Column(
-                                    children: [
-                                      const Text(
-                                        '10 am',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 7,
-                                      ),
-                                      Image.asset(
-                                        "assets/images/Icon.png",
-                                        height: 20,
-                                      ),
-                                      SizedBox(
-                                        height: 7,
-                                      ),
-                                      const Text(
-                                        '29°',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    width: 7,
-                                  ),
-                                  Column(
-                                    children: [
-                                      const Text(
-                                        '11 am',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 7,
-                                      ),
-                                      Image.asset(
-                                        "assets/images/Icon.png",
-                                        height: 20,
-                                      ),
-                                      SizedBox(
-                                        height: 7,
-                                      ),
-                                      const Text(
-                                        '29°',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    width: 7,
-                                  ),
-                                  Column(
-                                    children: [
-                                      const Text(
-                                        '12 pm',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 7,
-                                      ),
-                                      Image.asset(
-                                        "assets/images/Icon.png",
-                                        height: 20,
-                                      ),
-                                      SizedBox(
-                                        height: 7,
-                                      ),
-                                      const Text(
-                                        '29°',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    ],
+                                  WeatherTimelineItem(
+                                    temperature: '29°',
+                                    time: '4 pm',
+                                    imagePath: 'assets/images/Icon.png',
                                   ),
                                 ],
                               ),
@@ -486,7 +212,7 @@ class HomeScreen extends StatelessWidget {
                   Container(
                     width: 380,
                     height: 100,
-                    padding: EdgeInsets.only(top: 20),
+                    padding: const EdgeInsets.only(top: 20),
                     decoration: const BoxDecoration(
                       color: Color.fromARGB(110, 179, 185, 245),
                       borderRadius: BorderRadius.all(
@@ -556,10 +282,145 @@ class HomeScreen extends StatelessWidget {
                       ],
                     ),
                   ),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   Container(
-                    width: 100,
+                    width: 380,
+                    height: 332,
+                    decoration: const BoxDecoration(
+                      color: Color.fromARGB(110, 179, 185, 245),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(23),
+                      ),
+                    ),
+                    child: const Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 25, vertical: 5),
+                      child: Column(children: [
+                        WeatherDayItem(
+                            day: 'Monday',
+                            humidity: '2%',
+                            moonImagePath: 'assets/images/moonandcloud.png',
+                            crescentMoonImagePath:
+                                'assets/images/cresentmoon.png',
+                            currentTemperature: '34°',
+                            lowTemperature: '29°'),
+                        WeatherDayItem(
+                          day: 'Today',
+                          humidity: '3%',
+                          moonImagePath: 'assets/images/sun.png',
+                          crescentMoonImagePath:
+                              'assets/images/cresentmoon.png',
+                          currentTemperature: '35°',
+                          lowTemperature: '29°',
+                        ),
+                        WeatherDayItem(
+                          day: 'Wednesday',
+                          humidity: '5%',
+                          moonImagePath: 'assets/images/sun.png',
+                          crescentMoonImagePath:
+                              'assets/images/cresentmoon.png',
+                          currentTemperature: '35°',
+                          lowTemperature: '29°',
+                        ),
+                        WeatherDayItem(
+                          day: 'Thursday',
+                          humidity: '5%',
+                          moonImagePath: 'assets/images/moonandcloud.png',
+                          crescentMoonImagePath:
+                              'assets/images/cresentmoon.png',
+                          currentTemperature: '35°',
+                          lowTemperature: '28°',
+                        ),
+                        WeatherDayItem(
+                          day: 'Friday',
+                          humidity: '5%',
+                          moonImagePath: 'assets/images/sun.png',
+                          crescentMoonImagePath:
+                              'assets/images/cresentmoon.png',
+                          currentTemperature: '35°',
+                          lowTemperature: '28°',
+                        ),
+                        WeatherDayItem(
+                          day: 'Saturday',
+                          humidity: '5%',
+                          moonImagePath: 'assets/images/sun.png',
+                          crescentMoonImagePath:
+                              'assets/images/cresentmoon.png',
+                          currentTemperature: '35°',
+                          lowTemperature: '28°',
+                        ),
+                        WeatherDayItem(
+                          day: 'Sunday',
+                          humidity: '5%',
+                          moonImagePath: 'assets/images/sun.png',
+                          crescentMoonImagePath:
+                              'assets/images/cresentmoon.png',
+                          currentTemperature: '35°',
+                          lowTemperature: '29°',
+                        ),
+                      ]),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Container(
+                    width: 380,
+                    height: 150,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 10,
+                    ),
+                    decoration: const BoxDecoration(
+                      color: Color.fromARGB(110, 179, 185, 245),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(23),
+                      ),
+                    ),
+                    child: Row(children: [
+                      Expanded(
+                        child: Container(
+                            width: 100,
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text('Sunrise'),
+                                  Text('5:41 am'),
+                                  Image.asset(
+                                    "assets/images/sunrise.png",
+                                    width: 100,
+                                  )
+                                ])),
+                      ),
+                      Expanded(
+                        child: Container(
+                            width: 100,
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text('Sunset'),
+                                  Text('7:18 pm'),
+                                  Image.asset(
+                                    "assets/images/sunset.png",
+                                    width: 100,
+                                  )
+                                ])),
+                      ),
+                    ]),
+                  ),
+                  SizedBox(height: 10),
+                  Container(
+                    width: 380,
                     height: 200,
-                    color: Colors.black,
+                    padding: const EdgeInsets.only(top: 20),
+                    decoration: const BoxDecoration(
+                      color: Color.fromARGB(110, 179, 185, 245),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(23),
+                      ),
+                    ),
                   ),
                 ],
               ),

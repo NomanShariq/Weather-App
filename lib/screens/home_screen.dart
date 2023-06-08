@@ -1,16 +1,52 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:weather_app/widgets/weather_day_item.dart';
+import 'package:weather_app/widgets/weather_info_item.dart';
 
+import '../widgets/custom_weather_info_item.dart';
 import '../widgets/weather_time_line.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  ScrollController _scrollController = ScrollController();
+  Color _backgroundColor = const Color.fromARGB(255, 43, 64, 81);
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.offset > 100) {
+      setState(() {
+        _backgroundColor =
+            Colors.black; // Change to the desired background color
+      });
+    } else {
+      setState(() {
+        _backgroundColor = const Color.fromARGB(
+            255, 43, 64, 81); // Set the default background color
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 43, 64, 81),
+      backgroundColor: _backgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         leading: IconButton(
@@ -23,6 +59,7 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       body: SingleChildScrollView(
+        controller: _scrollController,
         child: Stack(
           children: [
             Container(
@@ -228,57 +265,19 @@ class HomeScreen extends StatelessWidget {
                               const Duration(milliseconds: 1900),
                           viewportFraction: 8.0),
                       items: const [
-                        Column(
-                          children: [
-                            Text(
-                              "Today's Feel Like Temperature",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                              ),
-                            ),
-                            Text(
-                              "Humidity will make you feel like 42°",
-                              style: TextStyle(
-                                color: Color.fromARGB(255, 181, 179, 179),
-                              ),
-                            ),
-                          ],
+                        WeatherInfoItem(
+                          title: "Today's Feel Like Temperature",
+                          description: "Humidity will make you like feel 42°",
                         ),
-                        Column(
-                          children: [
-                            Text(
-                              "Protect your Skin",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                              ),
-                            ),
-                            Text(
-                              "UC will be extreme.Limit sun exposure if possible",
-                              style: TextStyle(
-                                color: Color.fromARGB(255, 181, 179, 179),
-                              ),
-                            ),
-                          ],
+                        WeatherInfoItem(
+                          title: 'Protect Your Skin',
+                          description:
+                              'UV will be extreme. Limit sun exposure if possible',
                         ),
-                        Column(
-                          children: [
-                            Text(
-                              "Rise and shine",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                              ),
-                            ),
-                            Text(
-                              "Sunrise will be at 5:41 am",
-                              style: TextStyle(
-                                color: Color.fromARGB(255, 181, 179, 179),
-                              ),
-                            ),
-                          ],
-                        )
+                        WeatherInfoItem(
+                          title: 'Rise and Shine',
+                          description: 'Sunrise will be at 5:41 am',
+                        ),
                       ],
                     ),
                   ),
@@ -363,13 +362,12 @@ class HomeScreen extends StatelessWidget {
                       ]),
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Container(
                     width: 380,
-                    height: 150,
-                    padding: EdgeInsets.symmetric(
+                    height: 130,
+                    padding: const EdgeInsets.symmetric(
                       horizontal: 20,
-                      vertical: 10,
                     ),
                     decoration: const BoxDecoration(
                       color: Color.fromARGB(110, 179, 185, 245),
@@ -385,11 +383,28 @@ class HomeScreen extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text('Sunrise'),
-                                  Text('5:41 am'),
+                                  const Text(
+                                    'Sunrise',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  const Text(
+                                    '5:41 am',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
                                   Image.asset(
                                     "assets/images/sunrise.png",
-                                    width: 100,
+                                    width: 120,
                                   )
                                 ])),
                       ),
@@ -400,26 +415,68 @@ class HomeScreen extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text('Sunset'),
-                                  Text('7:18 pm'),
+                                  const Text(
+                                    'Sunset',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  const Text(
+                                    '7:18 pm',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
                                   Image.asset(
                                     "assets/images/sunset.png",
-                                    width: 100,
+                                    width: 120,
                                   )
                                 ])),
                       ),
                     ]),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Container(
                     width: 380,
-                    height: 200,
-                    padding: const EdgeInsets.only(top: 20),
+                    height: 150,
+                    padding: const EdgeInsets.only(
+                      top: 10,
+                      bottom: 10,
+                    ),
                     decoration: const BoxDecoration(
                       color: Color.fromARGB(110, 179, 185, 245),
                       borderRadius: BorderRadius.all(
                         Radius.circular(23),
                       ),
+                    ),
+                    child: const Row(
+                      children: [
+                        CustomWeatherInfoItem(
+                          icon: Icons.sunny,
+                          title: "UV index",
+                          value: "Low",
+                          iconColor: Color.fromARGB(255, 255, 203, 28),
+                        ),
+                        CustomWeatherInfoItem(
+                          icon: Icons.water_drop,
+                          title: 'Humidity',
+                          value: '79%',
+                          iconColor: Color.fromARGB(255, 152, 218, 249),
+                        ),
+                        CustomWeatherInfoItem(
+                          icon: Icons.air,
+                          title: 'Wind',
+                          value: '11 km/h',
+                          iconColor: Colors.grey,
+                        ),
+                      ],
                     ),
                   ),
                 ],

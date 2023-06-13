@@ -575,61 +575,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-// import 'package:carousel_slider/carousel_slider.dart';
-// import 'package:flutter/material.dart';
-// import 'package:http/http.dart' as http;
-// import 'package:intl/intl.dart';
-// import 'dart:convert';
-
-// import '../widgets/custom_weather_info_item.dart';
-// import '../widgets/weather_day_item.dart';
-
-// class HomeScreen extends StatefulWidget {
-//   const HomeScreen({Key? key}) : super(key: key);
-
-//   @override
-//   State<HomeScreen> createState() => _HomeScreenState();
-// }
-
-// class _HomeScreenState extends State<HomeScreen> {
-//   ScrollController _scrollController = ScrollController();
-//   Color _backgroundColor = const Color.fromARGB(255, 43, 64, 81);
-//   String _temperature = '';
-//   String _city = '';
-//   String _weatherDescription = '';
-//   String _sunrise = '';
-//   String _sunset = '';
-//   String _humidity = '';
-//   String _windSpeed = '';
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _scrollController.addListener(_onScroll);
-//     _fetchWeatherData();
-//   }
-
-//   @override
-//   void dispose() {
-//     _scrollController.dispose();
-//     super.dispose();
-//   }
-
-//   void _onScroll() {
-//     if (_scrollController.offset > 100) {
-//       setState(() {
-//         _backgroundColor =
-//             Colors.black; // Change to the desired background color
-//       });
-//     } else {
-//       setState(() {
-//         _backgroundColor = const Color.fromARGB(
-//             255, 43, 64, 81); // Set the default background color
-//       });
-//     }
-//   }
-
-//  v
 
 //   String _convertTimestampToTime(int timestamp) {
 //     var dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
@@ -663,80 +608,6 @@ class _HomeScreenState extends State<HomeScreen> {
 //     }
 //   }
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Weather App'),
-//         backgroundColor: _backgroundColor,
-//       ),
-//       body: SingleChildScrollView(
-//         controller: _scrollController,
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             Container(
-//               padding: const EdgeInsets.all(16),
-//               color: _backgroundColor,
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   Text(
-//                     '$_temperature°C',
-//                     style: const TextStyle(fontSize: 72, color: Colors.white),
-//                   ),
-//                   Text(
-//                     _city,
-//                     style: const TextStyle(fontSize: 24, color: Colors.white),
-//                   ),
-//                   const SizedBox(height: 16),
-//                   Text(
-//                     _weatherDescription,
-//                     style: const TextStyle(fontSize: 18, color: Colors.white),
-//                   ),
-//                   const SizedBox(height: 16),
-//                   Row(
-//                     children: [
-//                       const Icon(Icons.wb_sunny, color: Colors.yellow),
-//                       const SizedBox(width: 8),
-//                       Text(
-//                         'Sunrise: $_sunrise',
-//                         style:
-//                             const TextStyle(fontSize: 16, color: Colors.white),
-//                       ),
-//                       const SizedBox(width: 16),
-//                       const Icon(Icons.nights_stay, color: Colors.white),
-//                       const SizedBox(width: 8),
-//                       Text(
-//                         'Sunset: $_sunset',
-//                         style:
-//                             const TextStyle(fontSize: 16, color: Colors.white),
-//                       ),
-//                     ],
-//                   ),
-//                   const SizedBox(height: 16),
-//                   Row(
-//                     children: [
-//                       const Icon(Icons.opacity, color: Colors.blue),
-//                       const SizedBox(width: 8),
-//                       Text(
-//                         'Humidity: $_humidity%',
-//                         style:
-//                             const TextStyle(fontSize: 16, color: Colors.white),
-//                       ),
-//                       const SizedBox(width: 16),
-//                       const Icon(Icons.air, color: Colors.green),
-//                       const SizedBox(width: 8),
-//                       Text(
-//                         'Wind Speed: $_windSpeed km/h',
-//                         style:
-//                             const TextStyle(fontSize: 16, color: Colors.white),
-//                       ),
-//                     ],
-//                   ),
-//                 ],
-//               ),
-//             ),
 //             Padding(
 //               padding: const EdgeInsets.symmetric(vertical: 16),
 //               child: CarouselSlider(
@@ -794,64 +665,10 @@ class _HomeScreenState extends State<HomeScreen> {
 //                 );
 //               },
 //             ),
-//             const CustomWeatherInfoItem(
-//               title: 'Feels Like',
-//               value: '28°C',
-//             ),
-//             const CustomWeatherInfoItem(
-//               title: 'Pressure',
-//               value: '1015 hPa',
-//             ),
-//             const CustomWeatherInfoItem(
-//               title: 'Visibility',
-//               value: '10 km',
-//             ),
-//             const CustomWeatherInfoItem(
-//               title: 'UV Index',
-//               value: '5',
-//             ),
-//           ],
+//            
 //         ),
 //       ),
 //     );
 //   }
 // }
 
-// class WeatherTimelineItem extends StatelessWidget {
-//   final String day;
-//   final String iconPath;
-//   final String temperature;
-
-//   const WeatherTimelineItem({
-//     required this.day,
-//     required this.iconPath,
-//     required this.temperature,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       margin: const EdgeInsets.only(right: 16),
-//       child: Column(
-//         mainAxisAlignment: MainAxisAlignment.center,
-//         children: [
-//           Text(
-//             day,
-//             style: const TextStyle(fontSize: 18, color: Colors.white),
-//           ),
-//           const SizedBox(height: 8),
-//           Image.asset(
-//             iconPath,
-//             width: 32,
-//             height: 32,
-//           ),
-//           const SizedBox(height: 8),
-//           Text(
-//             temperature,
-//             style: const TextStyle(fontSize: 18, color: Colors.white),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }

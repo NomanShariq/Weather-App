@@ -96,3 +96,50 @@ class WeatherDayItem extends StatelessWidget {
     );
   }
 }
+// import 'package:flutter/material.dart';
+
+// class WeatherDayItem extends StatelessWidget {
+//   final String day;
+//   final String iconPath;
+//   final String temperature;
+
+//   const WeatherDayItem({
+//     required this.day,
+//     required this.iconPath,
+//     required this.temperature,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+//       decoration: BoxDecoration(
+//         border: Border.all(color: Colors.grey),
+//       ),
+//       child: Row(
+//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//         children: [
+//           Text(
+//             day,
+//             style: TextStyle(fontSize: 18),
+//           ),
+//           Row(
+//             children: [
+//               Image.asset(
+//                 iconPath,
+//                 width: 24,
+//                 height: 24,
+//               ),
+//               SizedBox(width: 8),
+//               Text(
+//                 temperature,
+//                 style: TextStyle(fontSize: 18),
+//               ),
+//             ],
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+

@@ -2,9 +2,11 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:weather_app/widgets/weather_day_item.dart';
 import 'package:weather_app/widgets/weather_info_item.dart';
-
 import '../widgets/custom_weather_info_item.dart';
 import '../widgets/weather_time_line.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'dart:convert';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,11 +18,18 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   ScrollController _scrollController = ScrollController();
   Color _backgroundColor = const Color.fromARGB(255, 43, 64, 81);
-
+  String _temperature = '';
+  String _city = '';
+  String _weatherDescription = '';
+  String _sunrise = '';
+  String _sunset = '';
+  String _humidity = '';
+  String _windSpeed = '';
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+    _fetchWeatherData();
   }
 
   @override
@@ -43,6 +52,48 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> _fetchWeatherData() async {
+    String flag =
+        'q'; // You can change this to 'id' if you want to search by city ID
+    String entryText =
+        'Karachi'; // Replace this with your desired city name or ID
+    String units = 'metric'; // You can change this to 'imperial' for Fahrenheit
+    String WEATHER_API_KEY =
+        '285d2f45568802d9e40df8adecc4a754'; // Replace this with your OpenWeatherMap API key
+
+    var url = Uri.parse(
+        'https://api.openweathermap.org/data/2.5/weather?$flag=$entryText&units=$units&appid=$WEATHER_API_KEY');
+
+    try {
+      var response = await http.get(url);
+      var data = json.decode(response.body);
+
+      setState(() {
+        _temperature = data['main']['temp'].round().toString();
+        _city = data['name'];
+        _weatherDescription = data['weather'][0]['description'];
+        _sunrise = _convertTimestampToTime(data['sys']['sunrise']);
+        _sunset = _convertTimestampToTime(data['sys']['sunset']);
+        _humidity = data['main']['humidity'].toString();
+        _windSpeed = data['wind']['speed'].toString();
+      });
+    } catch (e) {
+      print('Error fetching weather data: $e');
+    }
+  }
+
+  String _convertTimestampToTime(int timestamp) {
+    var dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+    var timeFormat = DateFormat.jm();
+    return timeFormat.format(dateTime);
+  }
+
+  String _getDayOfWeek(int timestamp) {
+    var dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+    var dayFormat = DateFormat('EEEE');
+    return dayFormat.format(dateTime);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,6 +108,47 @@ class _HomeScreenState extends State<HomeScreen> {
             color: Colors.white,
           ),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('Search'),
+                    content: TextFormField(
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(),
+                        ),
+                        hintText: 'Search your city here',
+                        prefixIcon: Icon(Icons.search),
+                      ),
+                    ),
+                    actions: [
+                      ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.blue),
+                        ),
+                        onPressed: () {
+                          // Handle submit button action here
+                        },
+                        child: Text('Submit',
+                            style: TextStyle(color: Colors.white)),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+            icon: const Icon(
+              Icons.search,
+              size: 30,
+              color: Colors.white,
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         controller: _scrollController,
@@ -80,43 +172,38 @@ class _HomeScreenState extends State<HomeScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Column(
+                              Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    '29°',
-                                    style: TextStyle(
-                                      fontSize: 65,
-                                      color: Colors.white,
-                                    ),
+                                    '$_temperature°C',
+                                    style: const TextStyle(
+                                        fontSize: 72, color: Colors.white),
                                   ),
                                   Text(
-                                    'Karachi',
-                                    style: TextStyle(
-                                      fontSize: 27,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
+                                    _city,
+                                    style: const TextStyle(
+                                        fontSize: 24, color: Colors.white),
                                   ),
                                   SizedBox(
                                     height: 20,
                                   ),
                                   Text(
-                                    '35° / 28° Feels like 36°',
+                                    '$_weatherDescription',
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
                                     ),
                                   ),
-                                  Text(
-                                    'Sun, 12:46 Am',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                                  )
+                                  // Text(
+                                  //   'Sun, 12:46 Am',
+                                  //   style: TextStyle(
+                                  //     fontSize: 15,
+                                  //     fontWeight: FontWeight.bold,
+                                  //     color: Colors.white,
+                                  //   ),
+                                  // )
                                 ],
                               ),
                               Padding(
@@ -391,8 +478,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       fontSize: 18,
                                     ),
                                   ),
-                                  const Text(
-                                    '5:41 am',
+                                  Text(
+                                    '$_sunrise ',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
@@ -423,8 +510,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       fontSize: 18,
                                     ),
                                   ),
-                                  const Text(
-                                    '7:18 pm',
+                                  Text(
+                                    '$_sunset ',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
@@ -456,7 +543,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Radius.circular(23),
                       ),
                     ),
-                    child: const Row(
+                    child: Row(
                       children: [
                         CustomWeatherInfoItem(
                           icon: Icons.sunny,
@@ -467,13 +554,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         CustomWeatherInfoItem(
                           icon: Icons.water_drop,
                           title: 'Humidity',
-                          value: '79%',
+                          value: '$_humidity%',
                           iconColor: Color.fromARGB(255, 152, 218, 249),
                         ),
                         CustomWeatherInfoItem(
                           icon: Icons.air,
                           title: 'Wind',
-                          value: '11 km/h',
+                          value: '$_windSpeed km/h',
                           iconColor: Colors.grey,
                         ),
                       ],
@@ -488,3 +575,283 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+// import 'package:carousel_slider/carousel_slider.dart';
+// import 'package:flutter/material.dart';
+// import 'package:http/http.dart' as http;
+// import 'package:intl/intl.dart';
+// import 'dart:convert';
+
+// import '../widgets/custom_weather_info_item.dart';
+// import '../widgets/weather_day_item.dart';
+
+// class HomeScreen extends StatefulWidget {
+//   const HomeScreen({Key? key}) : super(key: key);
+
+//   @override
+//   State<HomeScreen> createState() => _HomeScreenState();
+// }
+
+// class _HomeScreenState extends State<HomeScreen> {
+//   ScrollController _scrollController = ScrollController();
+//   Color _backgroundColor = const Color.fromARGB(255, 43, 64, 81);
+//   String _temperature = '';
+//   String _city = '';
+//   String _weatherDescription = '';
+//   String _sunrise = '';
+//   String _sunset = '';
+//   String _humidity = '';
+//   String _windSpeed = '';
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _scrollController.addListener(_onScroll);
+//     _fetchWeatherData();
+//   }
+
+//   @override
+//   void dispose() {
+//     _scrollController.dispose();
+//     super.dispose();
+//   }
+
+//   void _onScroll() {
+//     if (_scrollController.offset > 100) {
+//       setState(() {
+//         _backgroundColor =
+//             Colors.black; // Change to the desired background color
+//       });
+//     } else {
+//       setState(() {
+//         _backgroundColor = const Color.fromARGB(
+//             255, 43, 64, 81); // Set the default background color
+//       });
+//     }
+//   }
+
+//  v
+
+//   String _convertTimestampToTime(int timestamp) {
+//     var dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+//     var timeFormat = DateFormat.jm();
+//     return timeFormat.format(dateTime);
+//   }
+
+//   String _getDayOfWeek(int timestamp) {
+//     var dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+//     var dayFormat = DateFormat('EEEE');
+//     return dayFormat.format(dateTime);
+//   }
+
+//   String _getWeatherIcon(int weatherId) {
+//     if (weatherId >= 200 && weatherId <= 232) {
+//       return 'assets/images/moon.png';
+//     } else if (weatherId >= 300 && weatherId <= 321) {
+//       return 'assets/images/moon.png';
+//     } else if (weatherId >= 500 && weatherId <= 531) {
+//       return 'assets/images/moon.png';
+//     } else if (weatherId >= 600 && weatherId <= 622) {
+//       return 'assets/images/moon.png';
+//     } else if (weatherId >= 701 && weatherId <= 781) {
+//       return 'assets/images/mist.png';
+//     } else if (weatherId == 800) {
+//       return 'assets/images/moon.png';
+//     } else if (weatherId >= 801 && weatherId <= 804) {
+//       return 'assets/images/moon.png';
+//     } else {
+//       return 'assets/images/moon.png';
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('Weather App'),
+//         backgroundColor: _backgroundColor,
+//       ),
+//       body: SingleChildScrollView(
+//         controller: _scrollController,
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             Container(
+//               padding: const EdgeInsets.all(16),
+//               color: _backgroundColor,
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   Text(
+//                     '$_temperature°C',
+//                     style: const TextStyle(fontSize: 72, color: Colors.white),
+//                   ),
+//                   Text(
+//                     _city,
+//                     style: const TextStyle(fontSize: 24, color: Colors.white),
+//                   ),
+//                   const SizedBox(height: 16),
+//                   Text(
+//                     _weatherDescription,
+//                     style: const TextStyle(fontSize: 18, color: Colors.white),
+//                   ),
+//                   const SizedBox(height: 16),
+//                   Row(
+//                     children: [
+//                       const Icon(Icons.wb_sunny, color: Colors.yellow),
+//                       const SizedBox(width: 8),
+//                       Text(
+//                         'Sunrise: $_sunrise',
+//                         style:
+//                             const TextStyle(fontSize: 16, color: Colors.white),
+//                       ),
+//                       const SizedBox(width: 16),
+//                       const Icon(Icons.nights_stay, color: Colors.white),
+//                       const SizedBox(width: 8),
+//                       Text(
+//                         'Sunset: $_sunset',
+//                         style:
+//                             const TextStyle(fontSize: 16, color: Colors.white),
+//                       ),
+//                     ],
+//                   ),
+//                   const SizedBox(height: 16),
+//                   Row(
+//                     children: [
+//                       const Icon(Icons.opacity, color: Colors.blue),
+//                       const SizedBox(width: 8),
+//                       Text(
+//                         'Humidity: $_humidity%',
+//                         style:
+//                             const TextStyle(fontSize: 16, color: Colors.white),
+//                       ),
+//                       const SizedBox(width: 16),
+//                       const Icon(Icons.air, color: Colors.green),
+//                       const SizedBox(width: 8),
+//                       Text(
+//                         'Wind Speed: $_windSpeed km/h',
+//                         style:
+//                             const TextStyle(fontSize: 16, color: Colors.white),
+//                       ),
+//                     ],
+//                   ),
+//                 ],
+//               ),
+//             ),
+//             Padding(
+//               padding: const EdgeInsets.symmetric(vertical: 16),
+//               child: CarouselSlider(
+//                 options: CarouselOptions(
+//                   height: 120,
+//                   enlargeCenterPage: true,
+//                   enableInfiniteScroll: false,
+//                 ),
+//                 items: [
+//                   WeatherTimelineItem(
+//                     day: _getDayOfWeek(
+//                         DateTime.now().millisecondsSinceEpoch ~/ 1000),
+//                     iconPath: _getWeatherIcon(800),
+//                     temperature: '25°C',
+//                   ),
+//                   WeatherTimelineItem(
+//                     day: _getDayOfWeek(DateTime.now()
+//                             .add(const Duration(days: 1))
+//                             .millisecondsSinceEpoch ~/
+//                         1000),
+//                     iconPath: _getWeatherIcon(801),
+//                     temperature: '22°C',
+//                   ),
+//                   WeatherTimelineItem(
+//                     day: _getDayOfWeek(DateTime.now()
+//                             .add(const Duration(days: 2))
+//                             .millisecondsSinceEpoch ~/
+//                         1000),
+//                     iconPath: _getWeatherIcon(500),
+//                     temperature: '18°C',
+//                   ),
+//                   WeatherTimelineItem(
+//                     day: _getDayOfWeek(DateTime.now()
+//                             .add(const Duration(days: 3))
+//                             .millisecondsSinceEpoch ~/
+//                         1000),
+//                     iconPath: _getWeatherIcon(802),
+//                     temperature: '20°C',
+//                   ),
+//                 ],
+//               ),
+//             ),
+//             ListView.builder(
+//               shrinkWrap: true,
+//               physics: const NeverScrollableScrollPhysics(),
+//               itemCount: 5,
+//               itemBuilder: (context, index) {
+//                 return WeatherDayItem(
+//                   day: _getDayOfWeek(DateTime.now()
+//                           .add(Duration(days: index + 1))
+//                           .millisecondsSinceEpoch ~/
+//                       1000),
+//                   iconPath: _getWeatherIcon(802),
+//                   temperature: '20°C',
+//                 );
+//               },
+//             ),
+//             const CustomWeatherInfoItem(
+//               title: 'Feels Like',
+//               value: '28°C',
+//             ),
+//             const CustomWeatherInfoItem(
+//               title: 'Pressure',
+//               value: '1015 hPa',
+//             ),
+//             const CustomWeatherInfoItem(
+//               title: 'Visibility',
+//               value: '10 km',
+//             ),
+//             const CustomWeatherInfoItem(
+//               title: 'UV Index',
+//               value: '5',
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+// class WeatherTimelineItem extends StatelessWidget {
+//   final String day;
+//   final String iconPath;
+//   final String temperature;
+
+//   const WeatherTimelineItem({
+//     required this.day,
+//     required this.iconPath,
+//     required this.temperature,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       margin: const EdgeInsets.only(right: 16),
+//       child: Column(
+//         mainAxisAlignment: MainAxisAlignment.center,
+//         children: [
+//           Text(
+//             day,
+//             style: const TextStyle(fontSize: 18, color: Colors.white),
+//           ),
+//           const SizedBox(height: 8),
+//           Image.asset(
+//             iconPath,
+//             width: 32,
+//             height: 32,
+//           ),
+//           const SizedBox(height: 8),
+//           Text(
+//             temperature,
+//             style: const TextStyle(fontSize: 18, color: Colors.white),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }

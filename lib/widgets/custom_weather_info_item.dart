@@ -55,3 +55,34 @@ class CustomWeatherInfoItem extends StatelessWidget {
     );
   }
 }
+// import 'package:flutter/material.dart';
+
+// class CustomWeatherInfoItem extends StatelessWidget {
+//   final String title;
+//   final String value;
+
+//   const CustomWeatherInfoItem({
+//     required this.title,
+//     required this.value,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+//       child: Row(
+//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//         children: [
+//           Text(
+//             title,
+//             style: TextStyle(fontSize: 18),
+//           ),
+//           Text(
+//             value,
+//             style: TextStyle(fontSize: 18),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+

@@ -25,6 +25,66 @@ class _HomeScreenState extends State<HomeScreen> {
   String _sunset = '';
   String _humidity = '';
   String _windSpeed = '';
+
+  final List<Map<String, String>> weatherData = [
+    {
+      'day': 'Monday',
+      'humidity': '80%',
+      'moonImagePath': 'assets/images/thunderrain.png',
+      'crescentMoonImagePath': 'assets/images/cresentmoon.png',
+      'currentTemperature': '25°',
+      'lowTemperature': '20°',
+    },
+    {
+      'day': 'Tuesday',
+      'humidity': '75%',
+      'moonImagePath': 'assets/images/sun.png',
+      'crescentMoonImagePath': 'assets/images/Icon.png',
+      'currentTemperature': '22°',
+      'lowTemperature': '18°',
+    },
+    {
+      'day': 'Wednesday',
+      'humidity': '70%',
+      'moonImagePath': 'assets/images/thunderrain.png',
+      'crescentMoonImagePath': 'assets/images/cresentmoon.png',
+      'currentTemperature': '23°',
+      'lowTemperature': '19°',
+    },
+    {
+      'day': 'Thursday',
+      'humidity': '65%',
+      'moonImagePath': 'assets/images/sun.png',
+      'crescentMoonImagePath': 'assets/images/Icon.png',
+      'currentTemperature': '24°',
+      'lowTemperature': '18°',
+    },
+    {
+      'day': 'Friday',
+      'humidity': '60%',
+      'moonImagePath': 'assets/images/moonandcloud.png',
+      'crescentMoonImagePath': 'assets/images/cresentmoon.png',
+      'currentTemperature': '25°',
+      'lowTemperature': '19°',
+    },
+    {
+      'day': 'Saturday',
+      'humidity': '55%',
+      'moonImagePath': 'assets/images/moonandcloud.png',
+      'crescentMoonImagePath': 'assets/images/Icon.png',
+      'currentTemperature': '26°',
+      'lowTemperature': '20°',
+    },
+    {
+      'day': 'Sunday',
+      'humidity': '50%',
+      'moonImagePath': 'assets/images/thunderrain.png',
+      'crescentMoonImagePath': 'assets/images/Icon.png',
+      'currentTemperature': '27°',
+      'lowTemperature': '21°',
+    },
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -380,73 +440,24 @@ class _HomeScreenState extends State<HomeScreen> {
                         Radius.circular(23),
                       ),
                     ),
-                    child: const Padding(
+                    child: Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 25, vertical: 5),
-                      child: Column(children: [
-                        WeatherDayItem(
-                            day: 'Monday',
-                            humidity: '2%',
-                            moonImagePath: 'assets/images/moonandcloud.png',
+                      child: ListView.builder(
+                        itemCount: weatherData.length,
+                        itemBuilder: (context, index) {
+                          final data = weatherData[index];
+                          return WeatherDayItem(
+                            day: data['day']!,
+                            humidity: data['humidity']!,
+                            moonImagePath: data['moonImagePath']!,
                             crescentMoonImagePath:
-                                'assets/images/cresentmoon.png',
-                            currentTemperature: '34°',
-                            lowTemperature: '29°'),
-                        WeatherDayItem(
-                          day: 'Today',
-                          humidity: '3%',
-                          moonImagePath: 'assets/images/sun.png',
-                          crescentMoonImagePath:
-                              'assets/images/cresentmoon.png',
-                          currentTemperature: '35°',
-                          lowTemperature: '29°',
-                        ),
-                        WeatherDayItem(
-                          day: 'Wednesday',
-                          humidity: '5%',
-                          moonImagePath: 'assets/images/sun.png',
-                          crescentMoonImagePath:
-                              'assets/images/cresentmoon.png',
-                          currentTemperature: '35°',
-                          lowTemperature: '29°',
-                        ),
-                        WeatherDayItem(
-                          day: 'Thursday',
-                          humidity: '5%',
-                          moonImagePath: 'assets/images/moonandcloud.png',
-                          crescentMoonImagePath:
-                              'assets/images/cresentmoon.png',
-                          currentTemperature: '35°',
-                          lowTemperature: '28°',
-                        ),
-                        WeatherDayItem(
-                          day: 'Friday',
-                          humidity: '5%',
-                          moonImagePath: 'assets/images/sun.png',
-                          crescentMoonImagePath:
-                              'assets/images/cresentmoon.png',
-                          currentTemperature: '35°',
-                          lowTemperature: '28°',
-                        ),
-                        WeatherDayItem(
-                          day: 'Saturday',
-                          humidity: '5%',
-                          moonImagePath: 'assets/images/sun.png',
-                          crescentMoonImagePath:
-                              'assets/images/cresentmoon.png',
-                          currentTemperature: '35°',
-                          lowTemperature: '28°',
-                        ),
-                        WeatherDayItem(
-                          day: 'Sunday',
-                          humidity: '5%',
-                          moonImagePath: 'assets/images/sun.png',
-                          crescentMoonImagePath:
-                              'assets/images/cresentmoon.png',
-                          currentTemperature: '35°',
-                          lowTemperature: '29°',
-                        ),
-                      ]),
+                                data['crescentMoonImagePath']!,
+                            currentTemperature: data['currentTemperature']!,
+                            lowTemperature: data['lowTemperature']!,
+                          );
+                        },
+                      ),
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -575,100 +586,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-//   String _convertTimestampToTime(int timestamp) {
-//     var dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
-//     var timeFormat = DateFormat.jm();
-//     return timeFormat.format(dateTime);
-//   }
-
-//   String _getDayOfWeek(int timestamp) {
-//     var dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
-//     var dayFormat = DateFormat('EEEE');
-//     return dayFormat.format(dateTime);
-//   }
-
-//   String _getWeatherIcon(int weatherId) {
-//     if (weatherId >= 200 && weatherId <= 232) {
-//       return 'assets/images/moon.png';
-//     } else if (weatherId >= 300 && weatherId <= 321) {
-//       return 'assets/images/moon.png';
-//     } else if (weatherId >= 500 && weatherId <= 531) {
-//       return 'assets/images/moon.png';
-//     } else if (weatherId >= 600 && weatherId <= 622) {
-//       return 'assets/images/moon.png';
-//     } else if (weatherId >= 701 && weatherId <= 781) {
-//       return 'assets/images/mist.png';
-//     } else if (weatherId == 800) {
-//       return 'assets/images/moon.png';
-//     } else if (weatherId >= 801 && weatherId <= 804) {
-//       return 'assets/images/moon.png';
-//     } else {
-//       return 'assets/images/moon.png';
-//     }
-//   }
-
-//             Padding(
-//               padding: const EdgeInsets.symmetric(vertical: 16),
-//               child: CarouselSlider(
-//                 options: CarouselOptions(
-//                   height: 120,
-//                   enlargeCenterPage: true,
-//                   enableInfiniteScroll: false,
-//                 ),
-//                 items: [
-//                   WeatherTimelineItem(
-//                     day: _getDayOfWeek(
-//                         DateTime.now().millisecondsSinceEpoch ~/ 1000),
-//                     iconPath: _getWeatherIcon(800),
-//                     temperature: '25°C',
-//                   ),
-//                   WeatherTimelineItem(
-//                     day: _getDayOfWeek(DateTime.now()
-//                             .add(const Duration(days: 1))
-//                             .millisecondsSinceEpoch ~/
-//                         1000),
-//                     iconPath: _getWeatherIcon(801),
-//                     temperature: '22°C',
-//                   ),
-//                   WeatherTimelineItem(
-//                     day: _getDayOfWeek(DateTime.now()
-//                             .add(const Duration(days: 2))
-//                             .millisecondsSinceEpoch ~/
-//                         1000),
-//                     iconPath: _getWeatherIcon(500),
-//                     temperature: '18°C',
-//                   ),
-//                   WeatherTimelineItem(
-//                     day: _getDayOfWeek(DateTime.now()
-//                             .add(const Duration(days: 3))
-//                             .millisecondsSinceEpoch ~/
-//                         1000),
-//                     iconPath: _getWeatherIcon(802),
-//                     temperature: '20°C',
-//                   ),
-//                 ],
-//               ),
-//             ),
-//             ListView.builder(
-//               shrinkWrap: true,
-//               physics: const NeverScrollableScrollPhysics(),
-//               itemCount: 5,
-//               itemBuilder: (context, index) {
-//                 return WeatherDayItem(
-//                   day: _getDayOfWeek(DateTime.now()
-//                           .add(Duration(days: index + 1))
-//                           .millisecondsSinceEpoch ~/
-//                       1000),
-//                   iconPath: _getWeatherIcon(802),
-//                   temperature: '20°C',
-//                 );
-//               },
-//             ),
-//            
-//         ),
-//       ),
-//     );
-//   }
-// }
-

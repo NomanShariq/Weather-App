@@ -25,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String _sunset = '';
   String _humidity = '';
   String _windSpeed = '';
+  List<Map<String, dynamic>> forecastData = [];
 
   List<Map<String, dynamic>> weatherData = [];
 
@@ -34,6 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _scrollController.addListener(_onScroll);
     _fetchWeatherData();
     fetchsWeatherData();
+    fetchHourlyForecast();
   }
 
   @override
@@ -53,6 +55,42 @@ class _HomeScreenState extends State<HomeScreen> {
         _backgroundColor = const Color.fromARGB(
             255, 43, 64, 81); // Set the default background color
       });
+    }
+  }
+
+  Future<void> fetchHourlyForecast() async {
+    final apiKey = '0NSY9T1tFGo0NIXOYp23lro8DsuOcwPJ';
+    final locationKey = '55488';
+    final url =
+        'https://dataservice.accuweather.com/forecasts/v1/hourly/12hour/$locationKey?apikey=$apiKey';
+
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      final List<Map<String, dynamic>> hourlyForecastData = [];
+      final timeFormat = DateFormat('h:mm a');
+
+      for (var forecastItem in jsonData) {
+        final temperature = forecastItem['Temperature']['Value'];
+        final dateTimeString = forecastItem['DateTime'];
+        final dateTime = DateTime.parse(dateTimeString);
+        final time = timeFormat.format(dateTime);
+
+        final forecastMap = {
+          'temperature': temperature,
+          'time': time,
+          'imagePath': 'assets/images/Icon.png',
+        };
+
+        hourlyForecastData.add(forecastMap);
+      }
+
+      setState(() {
+        forecastData = hourlyForecastData;
+      });
+    } else {
+      throw Exception('Failed to fetch hourly forecast');
     }
   }
 
@@ -86,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
         final temperature = (forecastItem['main']['temp'] - 273.15);
         final temperature2 = (forecastItem['main']['feels_like'] - 273.15);
         final humidity = forecastItem['main']['humidity'];
-        
+
         final forecastMap = {
           'day': dateFormatter.format(
               DateTime.fromMillisecondsSinceEpoch(forecastItem['dt'] * 1000)),
@@ -291,102 +329,21 @@ class _HomeScreenState extends State<HomeScreen> {
                         Radius.circular(23),
                       ),
                     ),
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 15),
-                          child: Stack(
-                            children: [
-                              Row(
-                                children: [
-                                  WeatherTimelineItem(
-                                    temperature: '29°',
-                                    time: '1 am',
-                                    imagePath: 'assets/images/Icon.png',
-                                  ),
-                                  WeatherTimelineItem(
-                                    temperature: '29°',
-                                    time: '2 am',
-                                    imagePath: 'assets/images/Icon.png',
-                                  ),
-                                  WeatherTimelineItem(
-                                    temperature: '29°',
-                                    time: '3 am',
-                                    imagePath: 'assets/images/Icon.png',
-                                  ),
-                                  WeatherTimelineItem(
-                                    temperature: '29°',
-                                    time: '4 am',
-                                    imagePath: 'assets/images/Icon.png',
-                                  ),
-                                  WeatherTimelineItem(
-                                    temperature: '29°',
-                                    time: '5 am',
-                                    imagePath: 'assets/images/Icon.png',
-                                  ),
-                                  WeatherTimelineItem(
-                                    temperature: '29°',
-                                    time: '6 am',
-                                    imagePath: 'assets/images/Icon.png',
-                                  ),
-                                  WeatherTimelineItem(
-                                    temperature: '29°',
-                                    time: '7 am',
-                                    imagePath: 'assets/images/Icon.png',
-                                  ),
-                                  WeatherTimelineItem(
-                                    temperature: '29°',
-                                    time: '8 am',
-                                    imagePath: 'assets/images/Icon.png',
-                                  ),
-                                  WeatherTimelineItem(
-                                    temperature: '29°',
-                                    time: '9 am',
-                                    imagePath: 'assets/images/Icon.png',
-                                  ),
-                                  WeatherTimelineItem(
-                                    temperature: '29°',
-                                    time: '10 am',
-                                    imagePath: 'assets/images/Icon.png',
-                                  ),
-                                  WeatherTimelineItem(
-                                    temperature: '29°',
-                                    time: '11 am',
-                                    imagePath: 'assets/images/Icon.png',
-                                  ),
-                                  WeatherTimelineItem(
-                                    temperature: '29°',
-                                    time: '12 apm',
-                                    imagePath: 'assets/images/Icon.png',
-                                  ),
-                                  WeatherTimelineItem(
-                                    temperature: '29°',
-                                    time: '1 pm',
-                                    imagePath: 'assets/images/Icon.png',
-                                  ),
-                                  WeatherTimelineItem(
-                                    temperature: '29°',
-                                    time: '2 pm',
-                                    imagePath: 'assets/images/Icon.png',
-                                  ),
-                                  WeatherTimelineItem(
-                                    temperature: '29°',
-                                    time: '3 pm',
-                                    imagePath: 'assets/images/Icon.png',
-                                  ),
-                                  WeatherTimelineItem(
-                                    temperature: '29°',
-                                    time: '4 pm',
-                                    imagePath: 'assets/images/Icon.png',
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                    child: Padding(
+
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 15),
+                      child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: forecastData.length,
+                          itemBuilder: (context, index) {
+                            final forecastItem = forecastData[index];
+                            return WeatherTimelineItem(
+                              temperature: '${forecastItem['temperature']}',
+                              time: forecastItem['time'],
+                              imagePath: forecastItem['imagePath'],
+                            );
+                          }),
                     ),
                   ),
                   const SizedBox(

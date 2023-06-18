@@ -32,7 +32,7 @@ class WeatherTimelineItem extends StatelessWidget {
           ),
           const SizedBox(height: 7),
           Text(
-            temperature,
+            temperature+'°',
             style: const TextStyle(
               color: Colors.white,
               fontSize: 18,

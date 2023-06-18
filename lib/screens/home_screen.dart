@@ -26,70 +26,14 @@ class _HomeScreenState extends State<HomeScreen> {
   String _humidity = '';
   String _windSpeed = '';
 
-  final List<Map<String, String>> weatherData = [
-    {
-      'day': 'Monday',
-      'humidity': '80%',
-      'moonImagePath': 'assets/images/thunderrain.png',
-      'crescentMoonImagePath': 'assets/images/cresentmoon.png',
-      'currentTemperature': '25°',
-      'lowTemperature': '20°',
-    },
-    {
-      'day': 'Tuesday',
-      'humidity': '75%',
-      'moonImagePath': 'assets/images/sun.png',
-      'crescentMoonImagePath': 'assets/images/Icon.png',
-      'currentTemperature': '22°',
-      'lowTemperature': '18°',
-    },
-    {
-      'day': 'Wednesday',
-      'humidity': '70%',
-      'moonImagePath': 'assets/images/thunderrain.png',
-      'crescentMoonImagePath': 'assets/images/cresentmoon.png',
-      'currentTemperature': '23°',
-      'lowTemperature': '19°',
-    },
-    {
-      'day': 'Thursday',
-      'humidity': '65%',
-      'moonImagePath': 'assets/images/sun.png',
-      'crescentMoonImagePath': 'assets/images/Icon.png',
-      'currentTemperature': '24°',
-      'lowTemperature': '18°',
-    },
-    {
-      'day': 'Friday',
-      'humidity': '60%',
-      'moonImagePath': 'assets/images/moonandcloud.png',
-      'crescentMoonImagePath': 'assets/images/cresentmoon.png',
-      'currentTemperature': '25°',
-      'lowTemperature': '19°',
-    },
-    {
-      'day': 'Saturday',
-      'humidity': '55%',
-      'moonImagePath': 'assets/images/moonandcloud.png',
-      'crescentMoonImagePath': 'assets/images/Icon.png',
-      'currentTemperature': '26°',
-      'lowTemperature': '20°',
-    },
-    {
-      'day': 'Sunday',
-      'humidity': '50%',
-      'moonImagePath': 'assets/images/thunderrain.png',
-      'crescentMoonImagePath': 'assets/images/Icon.png',
-      'currentTemperature': '27°',
-      'lowTemperature': '21°',
-    },
-  ];
+  List<Map<String, dynamic>> weatherData = [];
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
     _fetchWeatherData();
+    fetchsWeatherData();
   }
 
   @override
@@ -111,6 +55,61 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }
   }
+
+  Future<void> fetchsWeatherData() async {
+    try {
+      final fetchedData = await fetchWeatherForecast();
+      setState(() {
+        weatherData = fetchedData;
+      });
+    } catch (error) {
+      print('Error fetching weather data: $error');
+      // Handle error here
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchWeatherForecast() async {
+    final url =
+        'https://api.openweathermap.org/data/2.5/forecast?lat=24.821962&lon=67.041426&appid=285d2f45568802d9e40df8adecc4a754';
+
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      final List<Map<String, dynamic>> forecastData = [];
+
+      final dateFormatter = DateFormat('EEEE');
+
+      for (var i = 0; i < jsonData['list'].length; i += 8) {
+        final forecastItem = jsonData['list'][i];
+
+        final temperature = (forecastItem['main']['temp'] - 273.15);
+        final temperature2 = (forecastItem['main']['feels_like'] - 273.15);
+        final humidity = forecastItem['main']['humidity'];
+        
+        final forecastMap = {
+          'day': dateFormatter.format(
+              DateTime.fromMillisecondsSinceEpoch(forecastItem['dt'] * 1000)),
+          'temperature': temperature,
+          'temperature2': temperature2,
+          'humidity': humidity,
+          'iconCode': forecastItem['weather'][0]['icon'],
+        };
+
+        forecastData.add(forecastMap);
+      }
+
+      return forecastData;
+    } else {
+      throw Exception('Failed to fetch weather forecast');
+    }
+  }
+
+  // String getIconPath(String iconCode) {
+  //   // Add your logic to determine the icon path based on the icon code
+  //   // You can use a switch statement or if-else conditions to map the icon codes to icon paths
+  //   return 'assets/images/$iconCode.png';
+  // }
 
   Future<void> _fetchWeatherData() async {
     String flag =
@@ -433,7 +432,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   Container(
                     width: 380,
-                    height: 332,
+                    height: 232,
                     decoration: const BoxDecoration(
                       color: Color.fromARGB(110, 179, 185, 245),
                       borderRadius: BorderRadius.all(
@@ -448,13 +447,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         itemBuilder: (context, index) {
                           final data = weatherData[index];
                           return WeatherDayItem(
-                            day: data['day']!,
-                            humidity: data['humidity']!,
-                            moonImagePath: data['moonImagePath']!,
-                            crescentMoonImagePath:
-                                data['crescentMoonImagePath']!,
-                            currentTemperature: data['currentTemperature']!,
-                            lowTemperature: data['lowTemperature']!,
+                            day: data['day'],
+                            temperature: data['temperature'],
+                            temperature2: data['temperature2'],
+                            iconPath: 'assets/images/moon.png',
+                            iconPath2: 'assets/images/sun.png',
+                            humidity: data['humidity'],
                           );
                         },
                       ),

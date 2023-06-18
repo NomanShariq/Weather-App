@@ -2,27 +2,25 @@ import 'package:flutter/material.dart';
 
 class WeatherDayItem extends StatelessWidget {
   final String day;
-  final String humidity;
-  final String moonImagePath;
-  final String crescentMoonImagePath;
-  final String currentTemperature;
-  final String lowTemperature;
+  final double temperature;
+  final double temperature2;
+  final int humidity;
+  final String iconPath;
+  final String iconPath2;
 
   const WeatherDayItem({
     required this.day,
-    this.humidity = '',
-    this.moonImagePath = '',
-    this.crescentMoonImagePath = '',
-    this.currentTemperature = '',
-    this.lowTemperature = '',
+    required this.temperature,
+    required this.temperature2,
+    required this.humidity,
+    required this.iconPath,
+    required this.iconPath2,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(
-        vertical: 10,
-      ),
+      margin: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
         children: [
           Expanded(
@@ -42,16 +40,14 @@ class WeatherDayItem extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.water_drop,
-                      color: Color.fromARGB(255, 139, 136, 136),
+                      color: const Color.fromARGB(255, 139, 136, 136),
                       size: 13,
                     ),
-                    SizedBox(
-                      width: 5,
-                    ),
+                    const SizedBox(width: 5),
                     Text(
-                      humidity,
+                      '$humidity%',
                       style: const TextStyle(
                         color: Color.fromARGB(255, 167, 162, 162),
                         fontSize: 13,
@@ -59,37 +55,37 @@ class WeatherDayItem extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(
-                  width: 25,
-                ),
+                const SizedBox(width: 20),
                 Image.asset(
-                  moonImagePath,
+                  iconPath,
                   height: 20,
                 ),
-                SizedBox(
-                  width: 20,
-                ),
+                const SizedBox(width: 10),
                 Image.asset(
-                  crescentMoonImagePath,
+                  iconPath2,
                   height: 20,
                 ),
-                const Spacer(),
-                Text(
-                  currentTemperature,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                ),
-                const Spacer(),
-                Text(
-                  lowTemperature,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
+                const SizedBox(width: 10),
+                Row(
+                  children: [
+                    Text(
+                      ' ${temperature.toStringAsFixed(0)}°',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      '${temperature2.toStringAsFixed(0)}°',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

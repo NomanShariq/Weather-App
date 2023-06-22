@@ -59,23 +59,28 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> fetchHourlyForecast() async {
-    final apiKey = '0NSY9T1tFGo0NIXOYp23lro8DsuOcwPJ';
-    final locationKey = '55488';
+    // final apiKey = '0NSY9T1tFGo0NIXOYp23lro8DsuOcwPJ';
+    // final locationKey = '55488';
     final url =
-        'https://dataservice.accuweather.com/forecasts/v1/hourly/12hour/$locationKey?apikey=$apiKey';
+        'http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/261158?apikey=f8GASRMPCckG9EZ9isdmLNGuiLsWjsVn';
 
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
       final List<Map<String, dynamic>> hourlyForecastData = [];
-      final timeFormat = DateFormat('h:mm a');
 
       for (var forecastItem in jsonData) {
-        final temperature = forecastItem['Temperature']['Value'];
+        final temperatureFahrenheit = forecastItem['Temperature']['Value'];
+        final temperatureCelsius = (temperatureFahrenheit - 32) * 5 / 9;
+
+        final temperatureFormat = NumberFormat('0');
+        final temperature = temperatureFormat.format(temperatureCelsius);
         final dateTimeString = forecastItem['DateTime'];
         final dateTime = DateTime.parse(dateTimeString);
-        final time = timeFormat.format(dateTime);
+        final timeFormat = DateFormat.jm();
+        final localTime = dateTime.toLocal();
+        final time = timeFormat.format(localTime);
 
         final forecastMap = {
           'temperature': temperature,
@@ -212,7 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text('Search'),
+                    title: const Text('Search'),
                     content: TextFormField(
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
@@ -231,8 +236,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         onPressed: () {
                           // Handle submit button action here
                         },
-                        child: Text('Submit',
-                            style: TextStyle(color: Colors.white)),
+                        child: const Text(
+                          'Submit',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ],
                   );
@@ -245,6 +254,14 @@ class _HomeScreenState extends State<HomeScreen> {
               color: Colors.white,
             ),
           ),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(
+              Icons.location_on,
+              size: 30,
+              color: Colors.white,
+            ),
+          )
         ],
       ),
       body: SingleChildScrollView(
@@ -282,12 +299,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                     style: const TextStyle(
                                         fontSize: 24, color: Colors.white),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 20,
                                   ),
                                   Text(
                                     '$_weatherDescription',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
@@ -322,7 +339,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   Container(
                     width: 380,
-                    height: 180,
+                    height: 160,
                     decoration: const BoxDecoration(
                       color: Color.fromARGB(110, 179, 185, 245),
                       borderRadius: BorderRadius.all(
@@ -330,7 +347,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     child: Padding(
-
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 15),
                       child: ListView.builder(
@@ -367,19 +383,19 @@ class _HomeScreenState extends State<HomeScreen> {
                           autoPlayAnimationDuration:
                               const Duration(milliseconds: 1900),
                           viewportFraction: 8.0),
-                      items: const [
-                        WeatherInfoItem(
+                      items: [
+                        const WeatherInfoItem(
                           title: "Today's Feel Like Temperature",
                           description: "Humidity will make you like feel 42°",
                         ),
-                        WeatherInfoItem(
+                        const WeatherInfoItem(
                           title: 'Protect Your Skin',
                           description:
                               'UV will be extreme. Limit sun exposure if possible',
                         ),
                         WeatherInfoItem(
                           title: 'Rise and Shine',
-                          description: 'Sunrise will be at 5:41 am',
+                          description: 'Sunrise will be at $_sunrise',
                         ),
                       ],
                     ),
@@ -397,8 +413,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 25, vertical: 5),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 25, vertical: 5),
                       child: ListView.builder(
                         itemCount: weatherData.length,
                         itemBuilder: (context, index) {
@@ -446,7 +462,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   Text(
                                     '$_sunrise ',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18,
@@ -478,7 +494,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   Text(
                                     '$_sunset ',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18,
@@ -511,7 +527,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     child: Row(
                       children: [
-                        CustomWeatherInfoItem(
+                        const CustomWeatherInfoItem(
                           icon: Icons.sunny,
                           title: "UV index",
                           value: "Low",
@@ -521,7 +537,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           icon: Icons.water_drop,
                           title: 'Humidity',
                           value: '$_humidity%',
-                          iconColor: Color.fromARGB(255, 152, 218, 249),
+                          iconColor: const Color.fromARGB(255, 152, 218, 249),
                         ),
                         CustomWeatherInfoItem(
                           icon: Icons.air,

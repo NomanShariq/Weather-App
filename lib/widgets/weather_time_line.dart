@@ -4,8 +4,9 @@ class WeatherTimelineItem extends StatelessWidget {
   final String time;
   final String temperature;
   final String imagePath;
+  
 
-  WeatherTimelineItem({
+  const WeatherTimelineItem({super.key, 
     required this.time,
     required this.temperature,
     required this.imagePath,
@@ -32,7 +33,7 @@ class WeatherTimelineItem extends StatelessWidget {
           ),
           const SizedBox(height: 7),
           Text(
-            temperature+'°',
+            '$temperature°',
             style: const TextStyle(
               color: Colors.white,
               fontSize: 18,

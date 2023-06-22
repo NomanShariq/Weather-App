@@ -8,7 +8,7 @@ class WeatherDayItem extends StatelessWidget {
   final String iconPath;
   final String iconPath2;
 
-  const WeatherDayItem({
+  const WeatherDayItem({super.key, 
     required this.day,
     required this.temperature,
     required this.temperature2,
@@ -40,9 +40,9 @@ class WeatherDayItem extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.water_drop,
-                      color: const Color.fromARGB(255, 139, 136, 136),
+                      color: Color.fromARGB(255, 139, 136, 136),
                       size: 13,
                     ),
                     const SizedBox(width: 5),

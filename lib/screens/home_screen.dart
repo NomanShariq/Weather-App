@@ -17,6 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   ScrollController _scrollController = ScrollController();
+  SearchController _searchController = SearchController();
   Color _backgroundColor = const Color.fromARGB(255, 43, 64, 81);
   String _temperature = '';
   String _city = '';
@@ -25,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String _sunset = '';
   String _humidity = '';
   String _windSpeed = '';
+  bool loading = true;
   List<Map<String, dynamic>> forecastData = [];
 
   List<Map<String, dynamic>> weatherData = [];
@@ -157,14 +159,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _fetchWeatherData() async {
     String flag =
         'q'; // You can change this to 'id' if you want to search by city ID
-    String entryText =
-        'Karachi'; // Replace this with your desired city name or ID
     String units = 'metric'; // You can change this to 'imperial' for Fahrenheit
     String WEATHER_API_KEY =
         '285d2f45568802d9e40df8adecc4a754'; // Replace this with your OpenWeatherMap API key
+    String cityName = _searchController.text;
 
     var url = Uri.parse(
-        'https://api.openweathermap.org/data/2.5/weather?$flag=$entryText&units=$units&appid=$WEATHER_API_KEY');
+        'https://api.openweathermap.org/data/2.5/weather?$flag=$cityName&units=$units&appid=$WEATHER_API_KEY');
 
     try {
       var response = await http.get(url);
@@ -219,6 +220,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   return AlertDialog(
                     title: const Text('Search'),
                     content: TextFormField(
+                      controller: _searchController,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
                           borderSide: BorderSide(),
@@ -234,10 +236,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               MaterialStateProperty.all<Color>(Colors.blue),
                         ),
                         onPressed: () {
-                          // Handle submit button action here
+                          _fetchWeatherData();
                         },
                         child: const Text(
-                          'Submit',
+                          'Search',
                           style: TextStyle(
                             color: Colors.white,
                           ),
@@ -268,289 +270,305 @@ class _HomeScreenState extends State<HomeScreen> {
         controller: _scrollController,
         child: Stack(
           children: [
-            Container(
-              width: MediaQuery.of(context).size.width,
-              margin: const EdgeInsets.only(top: 30),
-              child: Column(
-                children: [
-                  Container(
+            loading
+                ? Container(
                     width: MediaQuery.of(context).size.width,
-                    height: 270,
+                    margin: const EdgeInsets.only(top: 30),
                     child: Column(
                       children: [
                         Container(
                           width: MediaQuery.of(context).size.width,
-                          height: 200,
-                          margin: const EdgeInsets.symmetric(horizontal: 30),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          height: 270,
+                          child: Column(
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '$_temperature°C',
-                                    style: const TextStyle(
-                                        fontSize: 72, color: Colors.white),
-                                  ),
-                                  Text(
-                                    _city,
-                                    style: const TextStyle(
-                                        fontSize: 24, color: Colors.white),
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    '$_weatherDescription',
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 200,
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 30),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '$_temperature°C',
+                                          style: const TextStyle(
+                                              fontSize: 72,
+                                              color: Colors.white),
+                                        ),
+                                        Text(
+                                          _city,
+                                          style: const TextStyle(
+                                              fontSize: 24,
+                                              color: Colors.white),
+                                        ),
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        Text(
+                                          '$_weatherDescription',
+                                          style: const TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        // Text(
+                                        //   'Sun, 12:46 Am',
+                                        //   style: TextStyle(
+                                        //     fontSize: 15,
+                                        //     fontWeight: FontWeight.bold,
+                                        //     color: Colors.white,
+                                        //   ),
+                                        // )
+                                      ],
                                     ),
-                                  ),
-                                  // Text(
-                                  //   'Sun, 12:46 Am',
-                                  //   style: TextStyle(
-                                  //     fontSize: 15,
-                                  //     fontWeight: FontWeight.bold,
-                                  //     color: Colors.white,
-                                  //   ),
-                                  // )
-                                ],
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(18.0),
-                                child: Image.asset(
-                                  "assets/images/moon.png",
-                                  height: 120,
-                                  alignment: Alignment.topRight,
+                                    Padding(
+                                      padding: const EdgeInsets.all(18.0),
+                                      child: Image.asset(
+                                        "assets/images/moon.png",
+                                        height: 120,
+                                        alignment: Alignment.topRight,
+                                      ),
+                                    ),
+                                  ],
                                 ),
+                              ),
+                              const SizedBox(
+                                height: 70,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          width: 380,
+                          height: 160,
+                          decoration: const BoxDecoration(
+                            color: Color.fromARGB(110, 179, 185, 245),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(23),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 15),
+                            child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: forecastData.length,
+                                itemBuilder: (context, index) {
+                                  final forecastItem = forecastData[index];
+                                  return WeatherTimelineItem(
+                                    temperature:
+                                        '${forecastItem['temperature']}',
+                                    time: forecastItem['time'],
+                                    imagePath: forecastItem['imagePath'],
+                                  );
+                                }),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          width: 380,
+                          height: 100,
+                          padding: const EdgeInsets.only(top: 20),
+                          decoration: const BoxDecoration(
+                            color: Color.fromARGB(110, 179, 185, 245),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(23),
+                            ),
+                          ),
+                          child: CarouselSlider(
+                            options: CarouselOptions(
+                                enlargeCenterPage: true,
+                                autoPlay: true,
+                                aspectRatio: 16 / 9,
+                                autoPlayAnimationDuration:
+                                    const Duration(milliseconds: 1900),
+                                viewportFraction: 8.0),
+                            items: [
+                              const WeatherInfoItem(
+                                title: "Today's Feel Like Temperature",
+                                description:
+                                    "Humidity will make you like feel 42°",
+                              ),
+                              const WeatherInfoItem(
+                                title: 'Protect Your Skin',
+                                description:
+                                    'UV will be extreme. Limit sun exposure if possible',
+                              ),
+                              WeatherInfoItem(
+                                title: 'Rise and Shine',
+                                description: 'Sunrise will be at $_sunrise',
                               ),
                             ],
                           ),
                         ),
                         const SizedBox(
-                          height: 70,
+                          height: 10,
+                        ),
+                        Container(
+                          width: 380,
+                          height: 232,
+                          decoration: const BoxDecoration(
+                            color: Color.fromARGB(110, 179, 185, 245),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(23),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 25, vertical: 5),
+                            child: ListView.builder(
+                              itemCount: weatherData.length,
+                              itemBuilder: (context, index) {
+                                final data = weatherData[index];
+                                return WeatherDayItem(
+                                  day: data['day'],
+                                  temperature: data['temperature'],
+                                  temperature2: data['temperature2'],
+                                  iconPath: 'assets/images/moon.png',
+                                  iconPath2: 'assets/images/sun.png',
+                                  humidity: data['humidity'],
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Container(
+                          width: 380,
+                          height: 130,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                          ),
+                          decoration: const BoxDecoration(
+                            color: Color.fromARGB(110, 179, 185, 245),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(23),
+                            ),
+                          ),
+                          child: Row(children: [
+                            Expanded(
+                              child: Container(
+                                  width: 100,
+                                  child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        const Text(
+                                          'Sunrise',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                        Text(
+                                          '$_sunrise ',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Image.asset(
+                                          "assets/images/sunrise.png",
+                                          width: 120,
+                                        )
+                                      ])),
+                            ),
+                            Expanded(
+                              child: Container(
+                                  width: 100,
+                                  child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        const Text(
+                                          'Sunset',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                        Text(
+                                          '$_sunset ',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Image.asset(
+                                          "assets/images/sunset.png",
+                                          width: 120,
+                                        )
+                                      ])),
+                            ),
+                          ]),
+                        ),
+                        const SizedBox(height: 10),
+                        Container(
+                          width: 380,
+                          height: 150,
+                          padding: const EdgeInsets.only(
+                            top: 10,
+                            bottom: 10,
+                          ),
+                          decoration: const BoxDecoration(
+                            color: Color.fromARGB(110, 179, 185, 245),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(23),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              const CustomWeatherInfoItem(
+                                icon: Icons.sunny,
+                                title: "UV index",
+                                value: "Low",
+                                iconColor: Color.fromARGB(255, 255, 203, 28),
+                              ),
+                              CustomWeatherInfoItem(
+                                icon: Icons.water_drop,
+                                title: 'Humidity',
+                                value: '$_humidity%',
+                                iconColor:
+                                    const Color.fromARGB(255, 152, 218, 249),
+                              ),
+                              CustomWeatherInfoItem(
+                                icon: Icons.air,
+                                title: 'Wind',
+                                value: '$_windSpeed km/h',
+                                iconColor: Colors.grey,
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
+                  )
+                : Center(
+                    child: CircularProgressIndicator(),
                   ),
-                  Container(
-                    width: 380,
-                    height: 160,
-                    decoration: const BoxDecoration(
-                      color: Color.fromARGB(110, 179, 185, 245),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(23),
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 15),
-                      child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: forecastData.length,
-                          itemBuilder: (context, index) {
-                            final forecastItem = forecastData[index];
-                            return WeatherTimelineItem(
-                              temperature: '${forecastItem['temperature']}',
-                              time: forecastItem['time'],
-                              imagePath: forecastItem['imagePath'],
-                            );
-                          }),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    width: 380,
-                    height: 100,
-                    padding: const EdgeInsets.only(top: 20),
-                    decoration: const BoxDecoration(
-                      color: Color.fromARGB(110, 179, 185, 245),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(23),
-                      ),
-                    ),
-                    child: CarouselSlider(
-                      options: CarouselOptions(
-                          enlargeCenterPage: true,
-                          autoPlay: true,
-                          aspectRatio: 16 / 9,
-                          autoPlayAnimationDuration:
-                              const Duration(milliseconds: 1900),
-                          viewportFraction: 8.0),
-                      items: [
-                        const WeatherInfoItem(
-                          title: "Today's Feel Like Temperature",
-                          description: "Humidity will make you like feel 42°",
-                        ),
-                        const WeatherInfoItem(
-                          title: 'Protect Your Skin',
-                          description:
-                              'UV will be extreme. Limit sun exposure if possible',
-                        ),
-                        WeatherInfoItem(
-                          title: 'Rise and Shine',
-                          description: 'Sunrise will be at $_sunrise',
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    width: 380,
-                    height: 232,
-                    decoration: const BoxDecoration(
-                      color: Color.fromARGB(110, 179, 185, 245),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(23),
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 25, vertical: 5),
-                      child: ListView.builder(
-                        itemCount: weatherData.length,
-                        itemBuilder: (context, index) {
-                          final data = weatherData[index];
-                          return WeatherDayItem(
-                            day: data['day'],
-                            temperature: data['temperature'],
-                            temperature2: data['temperature2'],
-                            iconPath: 'assets/images/moon.png',
-                            iconPath2: 'assets/images/sun.png',
-                            humidity: data['humidity'],
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Container(
-                    width: 380,
-                    height: 130,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                    ),
-                    decoration: const BoxDecoration(
-                      color: Color.fromARGB(110, 179, 185, 245),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(23),
-                      ),
-                    ),
-                    child: Row(children: [
-                      Expanded(
-                        child: Container(
-                            width: 100,
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Text(
-                                    'Sunrise',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                  Text(
-                                    '$_sunrise ',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Image.asset(
-                                    "assets/images/sunrise.png",
-                                    width: 120,
-                                  )
-                                ])),
-                      ),
-                      Expanded(
-                        child: Container(
-                            width: 100,
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Text(
-                                    'Sunset',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                  Text(
-                                    '$_sunset ',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Image.asset(
-                                    "assets/images/sunset.png",
-                                    width: 120,
-                                  )
-                                ])),
-                      ),
-                    ]),
-                  ),
-                  const SizedBox(height: 10),
-                  Container(
-                    width: 380,
-                    height: 150,
-                    padding: const EdgeInsets.only(
-                      top: 10,
-                      bottom: 10,
-                    ),
-                    decoration: const BoxDecoration(
-                      color: Color.fromARGB(110, 179, 185, 245),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(23),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        const CustomWeatherInfoItem(
-                          icon: Icons.sunny,
-                          title: "UV index",
-                          value: "Low",
-                          iconColor: Color.fromARGB(255, 255, 203, 28),
-                        ),
-                        CustomWeatherInfoItem(
-                          icon: Icons.water_drop,
-                          title: 'Humidity',
-                          value: '$_humidity%',
-                          iconColor: const Color.fromARGB(255, 152, 218, 249),
-                        ),
-                        CustomWeatherInfoItem(
-                          icon: Icons.air,
-                          title: 'Wind',
-                          value: '$_windSpeed km/h',
-                          iconColor: Colors.grey,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
           ],
         ),
       ),

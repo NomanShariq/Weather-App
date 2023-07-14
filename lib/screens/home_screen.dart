@@ -1,5 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:weather_app/widgets/weather_day_item.dart';
 import 'package:weather_app/widgets/weather_info_item.dart';
 import '../widgets/custom_weather_info_item.dart';
@@ -7,6 +9,7 @@ import '../widgets/weather_time_line.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,9 +18,17 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
+class Coordinates {
+  final double latitude;
+  final double longitude;
+
+  Coordinates(this.latitude, this.longitude);
+}
+
 class _HomeScreenState extends State<HomeScreen> {
+  String location = "";
   ScrollController _scrollController = ScrollController();
-  SearchController _searchController = SearchController();
+  TextEditingController _searchController = TextEditingController();
   Color _backgroundColor = const Color.fromARGB(255, 43, 64, 81);
   String _temperature = '';
   String _city = '';
@@ -27,6 +38,9 @@ class _HomeScreenState extends State<HomeScreen> {
   String _humidity = '';
   String _windSpeed = '';
   bool loading = true;
+  String? userCurrentCityName = '';
+  String userCurrentLocationWeather = '';
+  String weatherIconCode = '';
   List<Map<String, dynamic>> forecastData = [];
 
   List<Map<String, dynamic>> weatherData = [];
@@ -36,14 +50,55 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _scrollController.addListener(_onScroll);
     _fetchWeatherData();
-    fetchsWeatherData();
+    fetchsWeekDaysWeatherData();
     fetchHourlyForecast();
+ 
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
     super.dispose();
+  }
+  // User current location function  //
+
+  void _getCurrentLocation() async {
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+    String apiKey = "285d2f45568802d9e40df8adecc4a754";
+    final url = Uri.parse(
+      "https://api.openweathermap.org/data/2.5/weather?lat=${position.latitude}&lon=${position.longitude}&appid=$apiKey",
+    );
+    var response = await http.get(url);
+    var data = jsonDecode(response.body);
+    setState(() {
+      print(position.latitude);
+      print(position.longitude);
+      location =
+          position.latitude.toString() + ", " + position.longitude.toString();
+      double temperatureKelvin = data["main"]["temp"];
+      double temperatureCelsius = temperatureKelvin - 273.15;
+      userCurrentLocationWeather = temperatureCelsius.toStringAsFixed(0) + "°C";
+      weatherIconCode = data["weather"][0]["icon"];
+    });
+
+    try {
+      final coordinates = Coordinates(position.latitude, position.longitude);
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        coordinates.latitude,
+        coordinates.longitude,
+      );
+      Placemark first = placemarks.first;
+
+      userCurrentCityName = first.locality;
+      String? address = first.street;
+
+      print("City: $userCurrentCityName");
+      print("Address: $address");
+    } catch (e) {
+      print("Error: $e");
+    }
   }
 
   void _onScroll() {
@@ -59,6 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }
   }
+  // Hourly weather forecast function  //
 
   Future<void> fetchHourlyForecast() async {
     // final apiKey = '0NSY9T1tFGo0NIXOYp23lro8DsuOcwPJ';
@@ -101,9 +157,10 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<void> fetchsWeatherData() async {
+  // 5 day weather forecast function  //
+  Future<void> fetchsWeekDaysWeatherData() async {
     try {
-      final fetchedData = await fetchWeatherForecast();
+      final fetchedData = await weekDayWeatherForecast();
       setState(() {
         weatherData = fetchedData;
       });
@@ -113,9 +170,9 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<List<Map<String, dynamic>>> fetchWeatherForecast() async {
+  Future<List<Map<String, dynamic>>> weekDayWeatherForecast() async {
     final url =
-        'https://api.openweathermap.org/data/2.5/forecast?lat=24.821962&lon=67.041426&appid=285d2f45568802d9e40df8adecc4a754';
+        'https://api.openweathermap.org/data/2.5/forecast?lat=24.9684544&lon=67.0509557&appid=285d2f45568802d9e40df8adecc4a754';
 
     final response = await http.get(Uri.parse(url));
 
@@ -150,11 +207,12 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // String getIconPath(String iconCode) {
-  //   // Add your logic to determine the icon path based on the icon code
-  //   // You can use a switch statement or if-else conditions to map the icon codes to icon paths
-  //   return 'assets/images/$iconCode.png';
-  // }
+  String weatherIconPath(String iconCode) {
+    // Add your logic to determine the icon path based on the icon code
+    // You can use a switch statement or if-else conditions to map the icon codes to icon paths
+    return 'assets/images/moon.png';
+  }
+  // City weather forecast function  //
 
   Future<void> _fetchWeatherData() async {
     String flag =
@@ -237,6 +295,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         onPressed: () {
                           _fetchWeatherData();
+                          Navigator.of(context, rootNavigator: true).pop();
                         },
                         child: const Text(
                           'Search',
@@ -257,7 +316,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: _getCurrentLocation,
             icon: const Icon(
               Icons.location_on,
               size: 30,
@@ -296,13 +355,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          '$_temperature°C',
+                                          userCurrentLocationWeather.isNotEmpty
+                                              ? userCurrentLocationWeather
+                                              : _temperature + '°C',
                                           style: const TextStyle(
                                               fontSize: 72,
                                               color: Colors.white),
                                         ),
                                         Text(
-                                          _city,
+                                          _city.isNotEmpty
+                                              ? _city
+                                              : '$userCurrentCityName',
                                           style: const TextStyle(
                                               fontSize: 24,
                                               color: Colors.white),
@@ -318,20 +381,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                             color: Colors.white,
                                           ),
                                         ),
-                                        // Text(
-                                        //   'Sun, 12:46 Am',
-                                        //   style: TextStyle(
-                                        //     fontSize: 15,
-                                        //     fontWeight: FontWeight.bold,
-                                        //     color: Colors.white,
-                                        //   ),
-                                        // )
+                                        
                                       ],
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.all(18.0),
                                       child: Image.asset(
-                                        "assets/images/moon.png",
+                                        weatherIconPath(weatherIconCode),
                                         height: 120,
                                         alignment: Alignment.topRight,
                                       ),
@@ -347,7 +403,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         Container(
                           width: 380,
-                          height: 160,
+                          height: 120,
                           decoration: const BoxDecoration(
                             color: Color.fromARGB(110, 179, 185, 245),
                             borderRadius: BorderRadius.all(

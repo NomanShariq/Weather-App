@@ -57,26 +57,16 @@ class WeatherDayItem extends StatelessWidget {
                 ),
                 const SizedBox(width: 20),
                 Image.asset(
-                  iconPath,
-                  height: 20,
-                ),
-                const SizedBox(width: 10),
-                Image.asset(
                   iconPath2,
+                  height: 20,
+                ),                    const SizedBox(width: 10),
+            Image.asset(
+                  iconPath,
                   height: 20,
                 ),
                 const SizedBox(width: 10),
                 Row(
                   children: [
-                    Text(
-                      ' ${temperature.toStringAsFixed(0)}°',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ),
-                    const SizedBox(width: 5),
                     Text(
                       '${temperature2.toStringAsFixed(0)}°',
                       style: const TextStyle(
@@ -85,6 +75,17 @@ class WeatherDayItem extends StatelessWidget {
                         fontSize: 18,
                       ),
                     ),
+                                        const SizedBox(width: 5),
+
+                    Text(
+                      ' ${temperature.toStringAsFixed(0)}°',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                    
                   ],
                 ),
               ],
